@@ -20,7 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 SECRET_KEY = 'django-insecure-gc$(#)7wmjpnvb3hsa6vv^(*uw4-ld9(t#u^c@f83+aza%io=#'
+=======
+SECRET_KEY = 'django-insecure-mj9c&ug*p0c6jq^h*!#uuf%pl)5h2envs)fq8#o4nbte22(2$7'
+>>>>>>> e4c98e18ce04a27f0df1179518af3da65cf56ad0
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,6 +43,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+<<<<<<< HEAD
+=======
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+>>>>>>> e4c98e18ce04a27f0df1179518af3da65cf56ad0
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -49,6 +66,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e4c98e18ce04a27f0df1179518af3da65cf56ad0
 ROOT_URLCONF = 'LibraryProject.urls'
 
 TEMPLATES = [
@@ -58,6 +79,10 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+<<<<<<< HEAD
+=======
+                'django.template.context_processors.debug',
+>>>>>>> e4c98e18ce04a27f0df1179518af3da65cf56ad0
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -66,6 +91,10 @@ TEMPLATES = [
     },
 ]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e4c98e18ce04a27f0df1179518af3da65cf56ad0
 WSGI_APPLICATION = 'LibraryProject.wsgi.application'
 
 
@@ -80,6 +109,10 @@ DATABASES = {
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e4c98e18ce04a27f0df1179518af3da65cf56ad0
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
