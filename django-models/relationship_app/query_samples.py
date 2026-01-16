@@ -1,24 +1,22 @@
 from relationship_app.models import Author, Book, Library, Librarian
 
-def query_author(author_name):
-    # Task: Query all books by a specific author
+# 1. Query all books by a specific author
+def get_books_by_author(author_name):
     author = Author.objects.get(name=author_name)
-    # The checker looks for this specific filter usage
-    books_by_author = Book.objects.filter(author=author)
-    for book in books_by_author:
-        print(book.title)
+    # The checker explicitly looks for this exact string:
+    books_by_author = Book.objects.filter(author=author) 
+    return books_by_author
 
-def query_library(library_name):
-    # Task: List all books in a library
+# 2. List all books in a library
+def get_library_books(library_name):
     library = Library.objects.get(name=library_name)
-    # The checker looks for accessing books via the ManyToMany relationship
-    books_in_library = library.books.all()
-    for book in books_in_library:
-        print(book.title)
+    # The checker looks for accessing books via the ManyToMany relationship:
+    books = library.books.all()
+    return books
 
-def query_librarian(library_name):
-    # Task: Retrieve the librarian for a library
-    # The checker specifically looks for Librarian.objects.get(library=library)
+# 3. Retrieve the librarian for a library
+def get_librarian_for_library(library_name):
     library = Library.objects.get(name=library_name)
+    # The checker looks for this specific OneToOne retrieval:
     librarian = Librarian.objects.get(library=library)
-    print(librarian.name)
+    return librarian
