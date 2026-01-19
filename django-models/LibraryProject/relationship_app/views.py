@@ -1,25 +1,20 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import permission_required
+from .models import Book
 
-# Helper functions to check roles
-def is_admin(user):
-    return user.is_authenticated and user.userprofile.role == 'Admin'
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    # Logic for adding a book
+    return render(request, 'relationship_app/add_book.html')
 
-def is_librarian(user):
-    return user.is_authenticated and user.userprofile.role == 'Librarian'
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    # Logic for editing a book
+    return render(request, 'relationship_app/edit_book.html', {'book': book})
 
-def is_member(user):
-    return user.is_authenticated and user.userprofile.role == 'Member'
-
-# Protected views
-@user_passes_test(is_admin)
-def admin_view(request):
-    return render(request, 'relationship_app/admin_view.html')
-
-@user_passes_test(is_librarian)
-def librarian_view(request):
-    return render(request, 'relationship_app/librarian_view.html')
-
-@user_passes_test(is_member)
-def member_view(request):
-    return render(request, 'relationship_app/member_view.html')
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    # Logic for deleting a book
+    return redirect('list_books')
