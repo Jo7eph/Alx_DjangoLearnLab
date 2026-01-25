@@ -31,21 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'accounts.apps.AccountsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Add your apps here
+    'bookshelf',  # <- your custom app
 ]
 
-# Custom User Model
-AUTH_USER_MODEL = "accounts.CustomUser"
-
-# Optional media configuration
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
 
 MIDDLEWARE = [
