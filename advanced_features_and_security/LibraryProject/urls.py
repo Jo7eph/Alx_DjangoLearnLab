@@ -1,7 +1,11 @@
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
 from django.urls import path
-from .views import list_books, LibraryDetailView # Checker looks for these views
 
 urlpatterns = [
-    path('books/', list_books, name='list_books'),
-    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),
+    path('admin/', admin.site.urls),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
