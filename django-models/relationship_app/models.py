@@ -1,20 +1,29 @@
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.utils import timezone
+class CustomUserManager(BaseUserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        if not username:
+            raise ValueError("The Username must be set")
 
-class Author(models.Model):
-    name = models.CharField(max_length=200)
-    def __str__(self): return self.name
+        email = self.normalize_email(email)
+        user = self.model(
+            username=username,
+            email=email,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    def __str__(self): return self.title
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
 
-class Library(models.Model):
-    name = models.CharField(max_length=200)
-    books = models.ManyToManyField(Book)
-    def __str__(self): return self.name
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
-class Librarian(models.Model):
-    name = models.CharField(max_length=200)
-    library = models.OneToOneField(Library, on_delete=models.CASCADE)
-    def __str__(self): return self.name
+        return self.create_user(username, email, password, **extra_fields)
