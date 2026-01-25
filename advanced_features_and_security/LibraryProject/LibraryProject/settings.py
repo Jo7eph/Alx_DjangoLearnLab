@@ -123,12 +123,18 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# Security settings for ALX Check
-SECURE_BROWSER_XSS_FILTER = True
+# Security settings for ALX
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Header Protections
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
 # --- HTTPS and Secure Header Settings ---
 
 # Redirect all HTTP requests to HTTPS
@@ -154,3 +160,8 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True 
 # Enable browser-side XSS filtering
 SECURE_BROWSER_XSS_FILTER = True
+# settings.py
+
+# This tells Django that it is behind a proxy that always terminates SSL
+# It ensures that request.is_secure() returns True when the header is present.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
