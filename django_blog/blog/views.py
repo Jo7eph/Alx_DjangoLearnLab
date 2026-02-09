@@ -119,7 +119,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         
-        self.post_obj = get_object_or_404(Post, pk=kwargs["post_id"])
+        self.post_obj = get_object_or_404(Post, pk=kwargs["pk"])
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
