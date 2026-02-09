@@ -1,8 +1,6 @@
 {% extends "blog/base.html" %}
-{% block title %}Comment{% endblock %}
-
 {% block content %}
-<h2>Comment</h2>
+<h2>Edit Comment</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
