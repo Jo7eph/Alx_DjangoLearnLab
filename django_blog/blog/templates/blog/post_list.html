@@ -6,7 +6,7 @@
 <h2>All Posts</h2>
 
 {% if user.is_authenticated %}
-  <p><a href="{% url 'post-create' %}">+ New Post</a></p>
+  <a href="{% url 'post-create' %}">+ New Post</a>
 {% endif %}
 
 {% if posts %}
