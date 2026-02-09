@@ -10,6 +10,11 @@
   {{ form.as_p }}
   <button type="submit">Save</button>
 </form>
+<div>
+  <label>Tags</label>
+  {{ form.tags }}
+  <small>{{ form.tags.help_text }}</small>
+</div>
 
 <p><a href="{% url 'posts' %}">Cancel</a></p>
 {% endblock %}

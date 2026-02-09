@@ -1,156 +1,54 @@
-# blog/views.py
-
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-)
-
-from .forms import PostForm, CommentForm
-from .models import Post, Comment
-
-
-# -------------------------
-# Basic pages (home/profile/register)
-# -------------------------
-
-def home_view(request):
-    return render(request, "blog/home.html")
-
-
-def register_view(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("login")
-    else:
-        form = UserCreationForm()
-
-    return render(request, "blog/register.html", {"form": form})
-
-
-@login_required
-def profile_view(request):
-    return render(request, "blog/profile.html")
-
-
-# -------------------------
-# POSTS: CRUD
-# -------------------------
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from django.views.generic import ListView
+from .models import Post, Tag
 
 class PostListView(ListView):
     model = Post
     template_name = "blog/post_list.html"
     context_object_name = "posts"
-    ordering = ["-created_at"]  
+    ordering = ["-created_at"]
     paginate_by = 10
 
 
-class PostDetailView(DetailView):
+class PostsByTagListView(ListView):
     model = Post
-    template_name = "blog/post_detail.html"
-    context_object_name = "post"
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs["tag_slug"])
+        return Post.objects.filter(tags=self.tag).order_by("-created_at")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        post = self.get_object()
-        context["comments"] = Comment.objects.filter(post=post).order_by("created_at")
-
-        
-        context["comment_form"] = CommentForm()
-
+        context["active_tag"] = self.tag
         return context
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class SearchResultsView(ListView):
     model = Post
-    form_class = PostForm
-    template_name = "blog/post_form.html"
+    template_name = "blog/search_results.html"
+    context_object_name = "posts"
+    paginate_by = 10
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+    def get_queryset(self):
+        q = (self.request.GET.get("q") or "").strip()
+        if not q:
+            return Post.objects.none()
 
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.object.pk})
+        return (
+            Post.objects.filter(
+                Q(title__icontains=q)
+                | Q(content__icontains=q)
+                | Q(tags__name__icontains=q)
+            )
+            .distinct()
+            .order_by("-created_at")
+        )
 
-
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Post
-    form_class = PostForm
-    template_name = "blog/post_form.html"
-
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.object.pk})
-
-
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Post
-    template_name = "blog/post_confirm_delete.html"
-    success_url = reverse_lazy("post-list")
-
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
-
-
-# -------------------------
-# COMMENTS: CRUD
-# -------------------------
-
-class CommentCreateView(LoginRequiredMixin, CreateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = "blog/comment_form.html"  
-
-    def dispatch(self, request, *args, **kwargs):
-        
-        self.post_obj = get_object_or_404(Post, pk=kwargs["pk"])
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        form.instance.post = self.post_obj
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.post_obj.pk})
-
-
-class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = "blog/comment_form.html"
-
-    def test_func(self):
-        comment = self.get_object()
-        return comment.author == self.request.user
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.object.post.pk})
-
-
-class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Comment
-    template_name = "blog/comment_confirm_delete.html"  
-
-    def test_func(self):
-        comment = self.get_object()
-        return comment.author == self.request.user
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.object.post.pk})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["q"] = (self.request.GET.get("q") or "").strip()
+        return context
