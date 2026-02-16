@@ -90,16 +90,12 @@ if os.environ.get("USE_SQLITE") == "1":
         }
     }
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "django_blog_db",
-            "USER": "django_user",
-            "PASSWORD": "django_password",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+}
 
 
 
