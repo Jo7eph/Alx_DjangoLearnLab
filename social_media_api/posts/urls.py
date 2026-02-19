@@ -1,7 +1,6 @@
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from .views import FeedViewSet
 
-router = DefaultRouter()
-router.register("feed", FeedViewSet, basename="feed")
-
-urlpatterns = router.urls
+urlpatterns = [
+    path("feed/", FeedViewSet.as_view({"get": "list"}), name="feed"),
+]
