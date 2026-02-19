@@ -1,13 +1,7 @@
-from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import PostViewSet, CommentViewSet, feed
+from .views import FeedViewSet
 
 router = DefaultRouter()
-router.register("posts", PostViewSet, basename="post")
-router.register("comments", CommentViewSet, basename="comment")
+router.register("feed", FeedViewSet, basename="feed")
 
-urlpatterns = [
-    path("feed/", feed, name="feed"),
-]
-
-urlpatterns += router.urls
+urlpatterns = router.urls
