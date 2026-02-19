@@ -29,3 +29,15 @@ def feed(request):
     qs = Post.objects.filter(author_id__in=following_ids).order_by("-created_at")
     serializer = PostSerializer(qs, many=True)
     return Response(serializer.data)
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def feed(request):
+    following_ids = request.user.following.values_list("id", flat=True)
+    posts = Post.objects.filter(author_id__in=following_ids).order_by("-created_at")
+    serializer = PostSerializer(posts, many=True)
+    return Response(serializer.data)

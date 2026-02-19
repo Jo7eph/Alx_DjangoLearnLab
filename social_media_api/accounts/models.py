@@ -1,11 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
 
-    # users I follow
     following = models.ManyToManyField(
         "self",
         symmetrical=False,
@@ -15,4 +14,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-
