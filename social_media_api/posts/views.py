@@ -1,54 +1,31 @@
-from rest_framework import viewsets, permissions
+from rest_framework import generics, permissions
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.contenttypes.models import ContentType
-from notifications.models import Notification
-from .models import Like
 
-# Dummy imports for structure (autograder string checks)
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .models import Post, Like
 
-class FeedViewSet(viewsets.ViewSet):
+# If your project notifications app exists here:
+try:
+    from notifications.models import Notification
+except Exception:
+    Notification = None
+
+class LikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def list(self, request):
-        following_users = request.user.following.all()
-        feed_posts = Post.objects.filter(author__in=following_users).order_by("-created_at")
-        serializer = PostSerializer(feed_posts, many=True)
-        return Response(serializer.data)
-class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        if created and Notification is not None:
+            Notification.objects.create(recipient=post.author, actor=request.user, verb="liked your post", target=post)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
-    def like(self, request, pk=None):
-        post = self.get_object()
-        like, created = Like.objects.get_or_create(
-            user=request.user,
-            post=post
-        )
+        return Response({"detail": "liked"})
 
-        if not created:
-            return Response({"detail": "Already liked"}, status=400)
 
-        if post.author != request.user:
-            Notification.objects.create(
-                recipient=post.author,
-                actor=request.user,
-                verb="liked your post",
-                target=post
-            )
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-        return Response({"detail": "Post liked"})
-
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
-    def unlike(self, request, pk=None):
-        post = self.get_object()
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
         Like.objects.filter(user=request.user, post=post).delete()
-        return Response({"detail": "Post unliked"})
+        return Response({"detail": "unliked"})
