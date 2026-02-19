@@ -163,3 +163,39 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'accounts.User'
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# ===== PRODUCTION SETTINGS =====
+
+DEBUG = False
+
+ALLOWED_HOSTS = ["*"]
+
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
+
+# Database configuration (production-style)
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "dbname",
+        "USER": "dbuser",
+        "PASSWORD": "dbpassword",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
+
+# Static and media files (collectstatic)
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+# AWS S3 placeholders for production storage
+AWS_ACCESS_KEY_ID = "your-access-key"
+AWS_SECRET_ACCESS_KEY = "your-secret-key"
+AWS_STORAGE_BUCKET_NAME = "your-bucket-name"
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
