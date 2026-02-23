@@ -1,0 +1,24 @@
+# Python / Django
+venv/
+.venv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# Django uploads/static (optional)
+media/
+staticfiles/
+
+# Editor
+.vscode/
+.idea/
+
+# Ignore sibling folders showing in git status (your other projects)
+../capstone_event_api/
+../event_api/
+../library_api/
+../social_media_api/
+../LibraryProject/
+../Introduction_to_Django/
+../api/
+../base.html
