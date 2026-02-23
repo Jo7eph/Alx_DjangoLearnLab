@@ -1,15 +1,19 @@
 from django import forms
-from .models import Comment
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
-class CommentForm(forms.ModelForm):
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
     class Meta:
-        model = Comment
-        fields = ["content"]
+        model = User
+        fields = ("username", "email", "password1", "password2")
 
-    def clean_content(self):
-        content = (self.cleaned_data.get("content") or "").strip()
-        if not content:
-            raise forms.ValidationError("Comment cannot be empty.")
-        if len(content) < 2:
-            raise forms.ValidationError("Comment is too short.")
-        return content
+
+class ProfileUpdateForm(forms.ModelForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "email")

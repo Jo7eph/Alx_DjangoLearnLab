@@ -1,50 +1,35 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import CreateView, UpdateView, DeleteView
-from django.shortcuts import get_object_or_404
-from django.urls import reverse, reverse_lazy
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
-from .models import Post, Comment
-from .forms import CommentForm
+from .forms import RegisterForm, ProfileUpdateForm
 
 
-class CommentCreateView(LoginRequiredMixin, CreateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = "blog/comment_form.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        self.post_obj = get_object_or_404(Post, pk=self.kwargs["pk"])
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        form.instance.post = self.post_obj
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.post_obj.pk})
+def home_view(request):
+    return render(request, "blog/home.html")
 
 
-class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = "blog/comment_form.html"
+def register_view(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account created. You can now log in.")
+            return redirect("login")
+    else:
+        form = RegisterForm()
+    return render(request, "blog/register.html", {"form": form})
 
-    def test_func(self):
-        comment = self.get_object()
-        return comment.author == self.request.user
 
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.get_object().post.pk})
+@login_required
+def profile_view(request):
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect("profile")
+    else:
+        form = ProfileUpdateForm(instance=request.user)
 
-
-class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Comment
-    template_name = "blog/comment_confirm_delete.html"
-
-    def test_func(self):
-        comment = self.get_object()
-        return comment.author == self.request.user
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.get_object().post.pk})
+    return render(request, "blog/profile.html", {"form": form})
