@@ -1,0 +1,24 @@
+# Python / Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+.env
+venv/
+.venv/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Ignore other ALX projects (important if they are in the same parent folder)
+django_blog/
+social_media_api/
+Introduction_to_Django/
+advanced-api-project/
+advanced_api_project/
+advanced_features_and_security/
+library_api/
