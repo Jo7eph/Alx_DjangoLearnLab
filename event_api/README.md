@@ -1,28 +1,49 @@
 # Event Management API
 
-## Description
-The Event Management API is a backend application built with Django and Django REST Framework.  
-It allows users to browse upcoming events publicly, while authenticated users can create, update, and manage their own events securely using JWT authentication.
+## Project Overview
+The Event Management API is a backend service built using **Django** and **Django REST Framework**.  
+It allows users to browse events publicly while authenticated users can create, manage, and register for events.
 
-## Features
-- Public event listing
-- Upcoming events filtering
-- User registration and authentication (JWT)
-- Create, update, and delete events (authenticated users only)
-- Permission control (only the event organizer can edit or delete their events)
-- Event registration and unregistration
-- Pagination and search support
+Authentication is implemented using **JWT (JSON Web Tokens)** and the API supports filtering, searching, and event registration.
 
-## Tech Stack
+---
+
+# Key Features
+
+### Public Access
+- View all events
+- View event details
+- Filter upcoming events
+
+### Authentication
+- User registration
+- JWT login authentication
+
+### Event Management
+- Create events (authenticated users)
+- Update events (organizer only)
+- Delete events (organizer only)
+
+### Event Registration
+- Register for events
+- Unregister from events
+
+---
+
+# Tech Stack
+
 - Python
 - Django
 - Django REST Framework
-- Simple JWT
-- SQLite (development)
+- SimpleJWT
+- SQLite
 
-## How to Run Locally
+---
 
-1. Clone the repository
+# Installation
+
+Clone the repository
+
 ```bash
-git clone https://github.com/Jo7eph/event-management-api
-cd event_api
+git clone https://github.com/Jo7eph/Alx_DjangoLearnLab.git
+cd Alx_DjangoLearnLab/event_api
